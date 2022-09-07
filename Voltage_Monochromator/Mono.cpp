@@ -164,8 +164,8 @@ int GDS_MO_Finalize() {
 
 int GDS_MO_GetInfo(MonochromatorInfo* monochromatorInfo)
 {
-	monochromatorInfo->minEnergy_ = 0.0;
-	monochromatorInfo->maxEnergy_ = 1.0;  //This is actually Voltage!!!
+	monochromatorInfo->minEnergy_ = -10.0;
+	monochromatorInfo->maxEnergy_ = 10.0;  //This is actually Voltage!!!
 	monochromatorInfo->minEnergyStep_ = 0.0;
 	monochromatorInfo->maxEnergyStep_ = 1.0;
 	return 0;
