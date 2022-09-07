@@ -175,12 +175,19 @@ int GDS_MO_GetInfo(MonochromatorInfo* monochromatorInfo)
 int GDS_MO_SetEnergy(double &AEnergy)
 {
 	//Here send data to Voltage script
+	std::string str = "Curr";
+	str += std::to_string(AEnergy) + "\n";
+	const char* c = str.c_str();
+
+	send_data(c);
 	return 0;
 }
 
 int GDS_MO_GetEnergy(double &AEnergy)
 {
 	//Here get data from voltage script and put it into AEnergy
-	AEnergy = 0.0;
+	const char* sendbuf = "Curr?\n";
+	send_data(sendbuf);
+	AEnergy = recv_data();
 	return 0;
 }
