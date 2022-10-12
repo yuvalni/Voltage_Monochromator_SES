@@ -111,7 +111,7 @@ double recv_data() {
 
 
 char* GDS_MO_GetLibInfo() {
-	char* ch = new char[59] /* 11 = len of Hello Heap + 1 char for \0*/;
+	char* ch = new char[59] /* 59 = len of Hello Heap + 1 char for \0*/;
 	strcpy_s(ch, 59, "Technion Voltage as MonoChromator Library, By Nitzav 2022.");
 
 	return ch;
@@ -123,7 +123,7 @@ int GDS_MO_Initialize(void* mainWindow) //     Use this function to initialize o
 										//hardware library.This function is called when a new manipulator hardware
 										//library is loaded in the manipulator library.
 {
-	//return initSocket();
+	return initSocket();
 	return 0;
 }
 
