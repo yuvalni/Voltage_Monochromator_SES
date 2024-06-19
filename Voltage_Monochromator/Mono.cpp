@@ -164,10 +164,10 @@ int GDS_MO_Finalize() {
 
 int GDS_MO_GetInfo(MonochromatorInfo* monochromatorInfo)
 {
-	monochromatorInfo->minEnergy_ = -10.0;
-	monochromatorInfo->maxEnergy_ = 10.0;  //This is actually Voltage!!!
-	monochromatorInfo->minEnergyStep_ = 0.0;
-	monochromatorInfo->maxEnergyStep_ = 1.0;
+	monochromatorInfo->minEnergy_ = -200.0; //In mA
+	monochromatorInfo->maxEnergy_ = 0.0;  //This is actually Current!!! 0 is unlimited In mA
+	monochromatorInfo->minEnergyStep_ = 0.00001;//steps in mA
+	monochromatorInfo->maxEnergyStep_ = 0.0;  //unlimited
 	return 0;
 }
 
@@ -178,8 +178,11 @@ int GDS_MO_SetEnergy(double &AEnergy)
 	std::string str = "Curr";
 	str += std::to_string(AEnergy) + "\n";
 	const char* c = str.c_str();
-
+	
 	send_data(c);
+
+	//We can ask what is the actuall current and put it in AEnergy for SES to know.
+	// It is possible to shift the "Binidng energy" of the scan according to this value, maybe a valuable option.
 	return 0;
 }
 
