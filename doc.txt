@@ -1,0 +1,304 @@
+Developer's Documentation - Monochromator interface
+--------------------------------------------------------------------------------
+
+Version: 1.0.0
+
+0 General notes
+  0.1  DataTypes
+  0.2  Error indication conventions
+  0.3  Terms and definitions
+  0.4  Record field alignment
+
+1 Initialization
+  1.1  GDS_MO_Initialize
+  1.2  GDS_MO_Finalize
+  1.2  GDS_MO_Setup
+
+2 Utility functions
+  2.1  GDS_MO_Reset
+  2.2  GDS_MO_GetLibInfo
+  2.3  GDS_MO_TestCommunication
+  2.4  GDS_MO_GetInfo
+
+3 Monochromator functions
+  3.1  GDS_MO_SetEnergy
+  3.2  GDS_MO_GetEnergy
+
+4 References
+
+
+
+0 General notes
+
+0.1  Data types
+
+  An effort has been made to make this interface compatible with other
+  programming languages. Excluding the ordinal types, which are very similar
+  for all programming languages, there are the types 'Boolean' and 'PChar'
+  which need to be taken into consideration.
+
+  'Boolean' is almost equivalent to C++ 'bool' type, although 'bool' is a bit
+  more restrictive. It is a one byte true boolean type, whose ordinal values
+  are 1 for true and 0 for false. The 'Boolean' type does accept ordinal values
+  different from 0 and 1, and, contrary to C++ 'bool', does not convert such
+  values to 1. A 'Boolean' variable with an ordinal value different from 0 and
+  1 will evaluate to true, but might break boolean arithmetic. The preferrable
+  choice is therefore to use the C++ 'bool' type with 'Boolean' parameters or
+  return values. If this is impossible, a byte should be used, and it must
+  always be 1 or 0.
+
+  Note also that C++ 'bool' and Windows 'BOOL' are two completely different
+  things. Windows 'BOOL' is a four byte ordinal and will not work with the
+  'Boolean' type.
+
+  The type 'PChar' is Delphi's version of C/C++ (char *) and they can be used
+  interchangably.
+
+  The 'var' reserved word in Delphi indicates that the parameter is called "by
+  reference". In C/C++ this can be implemented either by using a reference
+  parameter or a pointer.
+
+  nil is equivalent to C/C++ NULL.
+
+0.2  Error indication conventions
+
+  An error in a monochromator hardware library is indicated by returning a
+  non-zero value. The only exceptions are those functions that do not have
+  Integer as return type.
+
+0.3  Terms and definitions
+
+  In this text there appears several terms which can be confusing, therefore a
+  list of terms and definitions is provided below:
+
+    monochromator:
+      The term 'monochromator', as a single word, refers to the actual
+      monochromator hardware.
+
+    monochromator library:
+      The term 'monochromator library' refers to the software library supplied
+      by Gammadata Scienta AB as a plugin to Ses for high level control of
+      monochromators and undulators. This library is independent of the type of
+      monochromator and undulator.
+
+    monochromator hardware library:
+      The term 'monochromator hardware library' refers to any custom library
+      written to act as a plugin to the monochromator library for low level
+      control of a monochromator. This library will depend on the interface of
+      the monochromator.
+
+0.4  Record field alignment
+
+  The monochromator library uses 8 byte record field alignment.
+
+
+1. Initialization
+
+1.1  Initialize
+
+  syntax:
+    function GDS_MO_Initialize(AHandle: HWND): Integer; stdcall;
+    int __stdcall GDS_MO_Initialize(hWnd MainWindow);
+
+  parameters:
+    AHandle
+      [in] Handle of the application main window or 0.
+
+  return value:
+    If the function succeeds, the return value should be 0.
+
+    If the function fails, it should return a non-zero value.
+
+  usage:
+    Use this function to initialize objects and structures in a monochromator
+    hardware library. This function is called when a new monochromator hardware
+    library is loaded in the monochromator library.
+
+  remark:
+    This function is optional.
+
+    If this function is implemented, it should return a non-zero value only in
+    the most severe cases. Returning a non-zero value will result in the
+    monochromator library unloading the monochromator hardware library.
+
+1.2  Finalize
+
+  syntax:
+    procedure GDS_MO_Finalize; stdcall;
+    void __stdcall GDS_MO_Finalize();
+
+  usage:
+    Use this function to finalize objects and structures in a manipulator
+    hardware library. This function is called when a manipulator hardware
+    library is unloaded in the manipulator library.
+
+  remark:
+    This function is optional.
+
+1.3  Setup
+
+  syntax:
+    function GDS_MO_Setup: Boolean; stdcall;
+    bool __stdcall GDS_MO_Setup();
+
+  return value:
+    If changes have been made to the monochromator settings, this function should
+    return true.
+
+    If no changes have been made to the monochromator settings, or changes made
+    have been discarded, this functions should return false.
+
+  usage:
+    Use this function to display a dialogue with settings relevant to the
+    monochromator hardware library. If this function returns true, the
+    monochromator library calls GDS_MO_GetInfo to retrieve the new
+    monochromator settings.
+
+  remark:
+    This function is optional.
+
+
+2 Utility functions
+
+2.1  Reset
+
+  syntax:
+    function GDS_MO_Reset: Integer; stdcall;
+    int __stdcall GDS_MO_Reset();
+
+  usage:
+    None.
+
+  remark:
+    This function is currently not in use.
+
+2.2  GetLibInfo
+
+  syntax:
+    function GDS_MO_GetLibInfo: PChar; stdcall;
+    char* __stdcall GDS_MO_GetLibInfo();
+
+  return value:
+    The return value of this function should either be a pointer to a null
+    terminated string or nil.
+
+  usage:
+    This function is used to retrieve an information string, i.e. a version
+    string, from the monochromator hardware library.
+
+    It is called when the 'Setup Monochromator' dialogue in the monochromator
+    library is openened, and while being in that dialogue, when a new
+    monochromator hardware library is loaded.
+
+  remark:
+    This function is optional.
+
+2.3  TestCommunication
+
+  syntax:
+    function GDS_MO_TestCommunication(var AID: Integer): Integer; stdcall;
+    int __stdcall GDS_MO_TestCommunication(int &AID);
+
+  usage:
+    None.
+
+  remark:
+    This function is currently not in use.
+
+2.4  GetInfo
+
+  syntax:
+    function GDS_MO_GetInfo(AMonochromatorInfo: PMonochromatorInfo): Integer;
+      stdcall;
+    int __stdcall GDS_MO_GetInfo(MonochromatorInfo *AMonochromatorInfo);
+
+  parameters:
+    AMonochromatorInfo
+      [out] Pointer to a monochromator information record[1] to receive
+      information about the monochromator.
+
+  return value:
+    If the function succeeeds, the return value should be 0.
+
+    If the function fails, it should return a non-zero value.
+
+  usage:
+    This function is used to retrieve monochromator settings from the
+    monochromator hardware library.
+
+    It is called when a new monochromator hardware library is loaded in the
+    monochromator library, and when GDS_MO_Setup returns true.
+
+    If this function does not exist, the monochromator library will use default
+    values for all settings.
+
+  remark:
+    This function is optional.
+
+
+3 Monochromator functions
+
+3.1  SetEnergy
+
+  syntax:
+    function GDS_MO_SetEnergy(var AEnergy: Double): Integer; stdcall;
+    int __stdcall GDS_MO_SetEnergy(double &AEnergy);
+
+  parameters:
+    AEnergy
+      [in] Parameter containing the photon energy to be assigned to the
+      monochromator.
+      [out] Parameter to receive the actual energy of the monochromator after
+      the assignment.
+
+  return value:
+    If the function succeeds, the return value should be 0.
+
+    If the function fails, it should return a non-zero value. 
+
+  usage:
+    This function is used to assign a new energy to the monochromator.
+
+    Unless the 'Continue Acquisition on Error'-flag in 'Setup Monochromator' is
+    checked, a non-zero result will cause the current acquisition, if any, to
+    be aborted.
+
+    The monochromator library will use the value assigned to AEnergy for scale
+    calculation and, when performing an acquisition in binding energy mode,
+    calculation of kinetic energies. If it is desired that the actual energy of
+    the monochromator should be used, make sure to assign this value to AEnergy.
+
+  remark:
+    This function is required.
+
+3.2  GetEnergy
+
+  syntax:
+    function GDS_MO_GetEnergy(var AEnergy: Double): Integer;
+    int __stdcall GDS_MO_GetEnergy(double &AEnergy);
+
+  parameters:
+    AEnergy
+      [out] Parameter to receive current photon energy of the monochromator.
+
+  return value:
+    If the function succeeds, the return value should be 0.
+
+    If the function fails, it should return a non-zero value.
+
+  usage:
+    This function is used to retrieve the current photon energy from
+    the monochromator.
+
+    Unless the 'Continue Acquisition on Error'-flag in 'Setup Monochromator' is
+    checked, a non-zero result will cause the current acquisition, if any, to
+    be aborted.
+
+  remark:
+    This function is required.
+
+
+4 References
+
+  [1] monochromator-types.txt
+
